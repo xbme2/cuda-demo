@@ -16,12 +16,12 @@ set(CMAKE_CUDA_ARCHITECTURES 75)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 
 # 添加可执行文件目标，并指定源文件
-add_executable(my_cuda_program mat_transpose_cpu.cu)
+add_executable(mat_transpose mat_transpose_cpu.cu)
 
 # 添加父目录作为头文件路径
-target_include_directories(my_cuda_program PRIVATE ${CMAKE_SOURCE_DIR}/..)
+target_include_directories(mat_transpose PRIVATE ${CMAKE_SOURCE_DIR}/..)
 
 # 设置 CUDA 编译选项
-target_compile_options(my_cuda_program PRIVATE
+target_compile_options(mat_transpose PRIVATE
     $<$<COMPILE_LANGUAGE:CUDA>:-arch=sm_75>  # 根据 GPU 架构选择
 )
