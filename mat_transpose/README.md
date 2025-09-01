@@ -1,3 +1,4 @@
+```
 cpu cost time: 345.982 ms
 kernel minest time: 0.550912 ms
 kernel maxest time: 2.21347 ms
@@ -16,8 +17,8 @@ check result success!
 v5 kernel avg time: 0.46841 ms
 check result success!
 v6 kernel avg time: 0.473338 ms
-check result success!
-
+check result success!```
+```
 
 ### 1.矩阵转置 mat_transpose
 
@@ -32,4 +33,4 @@ check result success!
 #### v5 调整线程处理数据量
 #### v6 使用__restrict__，希望编译器激进,但未见成效
 
-1.9308 ->  0.46841 提速315%
+1.9308 ms ->  0.46841  ms提速 4.12x
