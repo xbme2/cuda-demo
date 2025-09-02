@@ -1,0 +1,3 @@
+/home/xbme2/csdiy/cuda-demo/elementwise/build/CMakeFiles/add.dir
+/home/xbme2/csdiy/cuda-demo/elementwise/build/CMakeFiles/edit_cache.dir
+/home/xbme2/csdiy/cuda-demo/elementwise/build/CMakeFiles/rebuild_cache.dir

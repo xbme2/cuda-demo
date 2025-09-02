@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #define EPSILON 1e-3
-
+#define CEIL(a, b) ((a + b - 1) / b)
 #define CHECK(call)                                                            \
     {                                                                          \
         const cudaError_t error = call;                                        \
@@ -30,7 +30,7 @@ double currentTime() {
     return (double)tp.tv_sec * 1e3 + (double)tp.tv_usec * 1e-3;
 }
 
-template <typename T> void Init(T *data, int nElem, T val) {
+template <typename T> void InitbyVal(T *data, int nElem, T val) {
     for (int i = 0; i < nElem; i++) {
         data[i] = val;
     }

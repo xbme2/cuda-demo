@@ -1,9 +1,9 @@
 #include "cuda_header.h"
-#define REPEAT 5
 
-const int MOD = 1e6;
-const int BLOCK_SZ = 32;
-const int NUM_PRE_THREAD = 4;
+constexpr int REPEAT = 5;
+constexpr int MOD = 1000000;
+constexpr int BLOCK_SZ = 32;
+constexpr int NUM_PRE_THREAD = 4;
 
 inline int Ceil(int a, int b) { return (a + b - 1) / b; }
 
