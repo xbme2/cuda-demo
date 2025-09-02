@@ -93,8 +93,8 @@ int main() {
     float *h_b = (float *)malloc(sizeof(float) * N);
     float *h_c = (float *)malloc(sizeof(float) * N);
     float *h_c_from_gpu = (float *)malloc(sizeof(float) * N);
-    InitbyVal(h_a, N, 1.f);
-    InitbyVal(h_b, N, 1.f);
+    InitByVal(h_a, N, 1.f);
+    InitByVal(h_b, N, 1.f);
 
     float *d_a = nullptr, *d_b = nullptr, *d_c = nullptr;
     CHECK(cudaMalloc(&d_a, sizeof(float) * N));
@@ -117,14 +117,14 @@ int main() {
     CHECK(cudaMemcpy(h_c_from_gpu, d_c, sizeof(float) * N,
                      cudaMemcpyDeviceToHost));
 
-    CheckResult(h_c_from_gpu, h_c, N);
+    CHECK_RESULT(h_c_from_gpu, h_c, N);
 
     float t1 = kernelTime(add_vf, CEIL(CEIL(N, 4), blockSize), block, 3, d_a,
                           d_b, d_c, N);
     std::cout << "kernel vf cost time: " << t1 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_c_from_gpu, d_c, sizeof(float) * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_c_from_gpu, h_c, N);
+    CHECK_RESULT(h_c_from_gpu, h_c, N);
 
     cudaFree(d_a);
     cudaFree(d_b);

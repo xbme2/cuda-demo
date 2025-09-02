@@ -277,7 +277,7 @@ int main() {
     std::cout << "kernel minest time: " << tmin << " ms" << std::endl;
     // CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
     //                  cudaMemcpyDeviceToHost));
-    // CheckResult(h_data, h_data_from_gpu, M * N);
+    // CHECK_RESULT(h_data, h_data_from_gpu, M * N);
     // 下限,跨越读，跨越写
     float tmax = kernelTime(mat_transpose_downLimit, grid, block, REPEAT,
                             d_idata, d_odata, M, N);
@@ -289,14 +289,14 @@ int main() {
     std::cout << "v0 kernel avg time: " << t0 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
     // mat_transpose_v00
     float t1 = kernelTime(mat_transpose_v00, grid, block, REPEAT, d_idata,
                           d_odata, M, N);
     std::cout << "v00 kernel avg time: " << t1 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // mat_transpose_v1
     float t2 = kernelTime(mat_transpose_v1<BLOCK_SZ>, grid, block, REPEAT,
@@ -304,7 +304,7 @@ int main() {
     std::cout << "v1 kernel avg time: " << t2 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // mat_transpose_v2
     float t3 = kernelTime(mat_transpose_v2<BLOCK_SZ>, grid, block, REPEAT,
@@ -312,7 +312,7 @@ int main() {
     std::cout << "v2 kernel avg time: " << t3 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // mat_transpose_v3
     block = dim3(BLOCK_SZ, BLOCK_SZ / NUM_PRE_THREAD);
@@ -322,7 +322,7 @@ int main() {
     std::cout << "v3 kernel avg time: " << t4 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
     // std::cout << h_data_from_gpu[1] << std::endl;
 
     // mat_transpose_v4
@@ -331,7 +331,7 @@ int main() {
     std::cout << "v4 kernel avg time: " << t5 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // mat_transpose_v5
     block = dim3(BLOCK_SZ, BLOCK_SZ / 8);
@@ -341,7 +341,7 @@ int main() {
     std::cout << "v5 kernel avg time: " << t6 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // mat_transpose_v6
     block = dim3(BLOCK_SZ, BLOCK_SZ / NUM_PRE_THREAD);
@@ -351,7 +351,7 @@ int main() {
     std::cout << "v6 kernel avg time: " << t7 << " ms" << std::endl;
     CHECK(cudaMemcpy(h_data_from_gpu, d_odata, sizeof(float) * M * N,
                      cudaMemcpyDeviceToHost));
-    CheckResult(h_data, h_data_from_gpu, M * N);
+    CHECK_RESULT(h_data, h_data_from_gpu, M * N);
 
     // free
 
