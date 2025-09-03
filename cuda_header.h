@@ -4,6 +4,18 @@
 #include <format>
 #include <iostream>
 #include <stdio.h>
+#include <string>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <sys/time.h>
+#endif
+
+// 常量定义
+constexpr int DEFAULT_BLOCK_NUM = 1 << 10;
+constexpr int DEFAULT_BLOCK_SIZE = 1 << 8;
+
+// 宏定义
 #define EPSILON 1e-3
 #define CEIL(a, b) ((a + b - 1) / b)
 #define CHECK(call)                                                            \
@@ -17,15 +29,28 @@
     }
 
 #define VNAME(value) (#value)
-#define CHECK_RESULT(src, dst, n) CheckResult(src, dst, n, #dst)
+#define CHECK_RESULT(src, dst, n) CheckResult(src, dst, n, #dst) // 记录变量名称
+#define CPU_TIME(...)                                                          \
+    cpuTime(#__VA_ARGS__, [&]() { __VA_ARGS__; }) // 记录函数名称
+#define KERNEL_TIME(repeat, ...)                                               \
+    kernelTime(repeat, #__VA_ARGS__, [&]() { __VA_ARGS__; }) // 记录函数名称
 
-#include <time.h>
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <sys/time.h>
-#endif
+inline std::string clipName(const char *name) {
+    std::string s(name);
+    auto pos = s.find('<');
+    if (pos != std::string::npos) {
+        s = s.substr(0, pos);
+    } else {
+        if (s.size() > 20)
+            s = s.substr(0, 20);
+    }
+    return s;
+}
 
+// 核函数，用于预热gpu
+__global__ void warmup() {}
+
+// 记时
 // 用于cpu 记时
 double currentTime() {
 #ifdef _WIN32
@@ -43,12 +68,39 @@ double currentTime() {
 #endif
 }
 
-template <typename Func, typename... Args>
-void cpuTime(Func func, Args... args) {
+template <typename HostFunc> void cpuTime(const char *funcName, HostFunc f) {
     double current = currentTime();
-    func(args...);
-    std::cout << "cpu cost time: " << currentTime() - current << " ms"
-              << std::endl;
+    f();
+    std::cout << clipName(funcName) << " cost time: " << currentTime() - current
+              << " ms" << std::endl;
+}
+
+// 用于gpu 核函数记时
+template <typename KernelFunc>
+void kernelTime(int repeat, const char *funcName, KernelFunc kernel) {
+
+    // 似乎最好是在测核函数之前warmup
+    warmup<<<DEFAULT_BLOCK_NUM, DEFAULT_BLOCK_SIZE>>>();
+    cudaDeviceSynchronize();
+    float totalTime = 0.f, singleTime = 0.f;
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    for (int i = 0; i < repeat; i++) {
+        cudaEventRecord(start, 0);
+        kernel();
+        cudaEventRecord(stop, 0);
+        cudaEventSynchronize(stop);
+
+        cudaEventElapsedTime(&singleTime, start, stop);
+        totalTime += singleTime;
+    }
+
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
+    std::cout << clipName(funcName) << " cost time: " << totalTime / repeat
+              << " ms" << std::endl;
 }
 
 // 初始化
@@ -65,6 +117,7 @@ __host__ void InitByFunc(T *data, int nElem, Func func) {
     }
 }
 
+// 检测结果
 template <typename T>
 __host__ void CheckResult(T *src, T *dst, int nElem, const char *dstName) {
     // 检测变量名称
@@ -85,35 +138,6 @@ __host__ void CheckResult(T *src, T *dst, int nElem, const char *dstName) {
         }
     }
     printf("check result success!\n");
-}
-
-__global__ void warmup() {}
-
-template <typename kernelFunc, typename... Args>
-float kernelTime(kernelFunc kernel, dim3 grid, dim3 block, int repeat,
-                 Args... args) {
-
-    // 似乎最好是在测核函数之前warmup
-    warmup<<<grid, block>>>();
-    cudaDeviceSynchronize();
-    float totalTime = 0.f, singleTime = 0.f;
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-
-    for (int i = 0; i < repeat; i++) {
-        cudaEventRecord(start, 0);
-        kernel<<<grid, block>>>(args...);
-        cudaEventRecord(stop, 0);
-        cudaEventSynchronize(stop);
-
-        cudaEventElapsedTime(&singleTime, start, stop);
-        totalTime += singleTime;
-    }
-
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
-    return totalTime / repeat;
 }
 
 #endif // __CUDA_HEADER__

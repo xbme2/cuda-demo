@@ -25,5 +25,5 @@ check result success!
 我猜测是L1缓存的功能,一次昂贵的全局内存+N次L1缓存命中 优于 2N次共享内存, 所以耗时是两倍少一点
 估计当每个元素重用次数更多时会反转,在这个情况，每个元素只使用log(BLOCK_SZ)= 8次  
 
-- 参考了“[text](http://giantpandacv.com/project/CUDA/%E3%80%90BBuf%E7%9A%84CUDA%E7%AC%94%E8%AE%B0%E3%80%91%E4%B8%89%EF%BC%8Creduce%E4%BC%98%E5%8C%96%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#reduce)”
-- v6参考  pytorch源码 [text](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh)
+- 参考了“[GiantPandaCV 博客](http://giantpandacv.com/project/CUDA/%E3%80%90BBuf%E7%9A%84CUDA%E7%AC%94%E8%AE%B0%E3%80%91%E4%B8%89%EF%BC%8Creduce%E4%BC%98%E5%8C%96%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#reduce)”
+- v6参考   [pytorch源码](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh)
